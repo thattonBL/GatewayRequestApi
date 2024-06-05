@@ -1,0 +1,96 @@
+version: '3.4'
+
+networks:
+  gatewaynetwork:
+    driver: bridge
+
+volumes:
+    gatewaydb_data:
+      driver: local
+
+services:
+  gatewaydb:
+    container_name: gateway-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    stdin_open: true
+    ports:
+        - "1433:1433"
+    environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=password@12345#
+    restart: always
+    networks:
+        - gatewaynetwork
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P password@12345# -Q 'SELECT 1' || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    volumes:
+         - ./gatewaydb_data:/docker-entrypoint-initdb.d
+  gatewaydb.configurator:
+      image: mcr.microsoft.com/mssql-tools:latest
+      container_name: gateway-db-configurator
+      user: root
+      volumes:
+         - ./gatewaydb_data:/docker-entrypoint-initdb.d
+      depends_on:
+         gatewaydb:
+           condition: service_healthy
+      command: bash -c '/opt/mssql-tools/bin/sqlcmd -S gateway-db -U sa -P password@12345# -i /docker-entrypoint-initdb.d/init.sql; echo "------------------------------ALLLL DONNNNNNEEEEEE!!!!---------------------------------";'
+      networks:
+         - gatewaynetwork
+  elasticsrch01:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.17.20
+      container_name: gateway-elasticsearch
+      environment:
+        - node.name=elasticsrch01
+        - cluster.name=es-docker-cluster
+        - cluster.initial_master_nodes=elasticsrch01
+        - bootstrap.memory_lock=true
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      ulimits:
+        memlock:
+            soft: -1
+            hard: -1
+      volumes:
+        - ./elasticsrchdata01:/usr/share/elasticsearch/data
+      ports:
+        - "9200:9200"
+      networks:
+        - gatewaynetwork
+  kibana:
+      image: docker.elastic.co/kibana/kibana:7.17.20
+      container_name: gateway-kibana
+      environment:
+          - ELASTICSEARCH_URL=http://elasticsrch01:9200
+          - ELASTICSEARCH_HOSTS=http://elasticsrch01:9200
+      ports:
+          - "5601:5601"
+      networks:
+          - gatewaynetwork
+  gatewayrabbitmq:
+    image: rabbitmq:3.13.1-management
+    container_name: gateway-rabbitmq
+    ports:
+        - "15672:15672"
+        - "5672:5672"
+    networks:
+        - gatewaynetwork
+  gatewayrequestapi:
+        container_name: gateway-req-api
+        image: ${DOCKER_REGISTRY-}gatewayrequestapi
+        build:
+            context: .
+            dockerfile: GatewayRequestApi/Dockerfile
+        depends_on:
+          - gatewaydb
+          - gatewayrabbitmq
+        environment:
+          - DB_HOST=gateway-db
+          - DB_NAME=Gateway
+          - DB_SA_PASSWORD=password@12345#
+          - MSG_HOST=gateway-rabbitmq
+        networks:
+          - gatewaynetwork

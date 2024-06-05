@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>1fbb643f-ae61-4a9a-a151-4d42ce9bebc4</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..\..</DockerfileContext>
+    <DockerfileContext>..\..\..\..</DockerfileContext>
     <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BLGatewaySourceLibraries\src\BuildingBlocks\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
-    <ProjectReference Include="..\..\BLGatewaySourceLibraries\src\Common\Events.Common\Events.Common.csproj" />
-    <ProjectReference Include="..\..\BLGatewaySourceLibraries\src\Common\Services.Common\Services.Common.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
+    <ProjectReference Include="..\..\..\Common\Events.Common\Events.Common.csproj" />
+    <ProjectReference Include="..\..\..\Common\Services.Common\Services.Common.csproj" />
     <ProjectReference Include="..\Message.Domain\Message.Domain.csproj" />
     <ProjectReference Include="..\Message.Infrastructure\Message.Infrastructure.csproj" />
   </ItemGroup>

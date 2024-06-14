@@ -16,11 +16,18 @@ namespace GatewayRequestApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
             // Add services to the container.
-            builder.Services.AddControllers(); 
-            
-            builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+            builder.Services.AddControllers();
+            builder.Services.AddHttpContextAccessor();
+
+            builder.Host.UseSerilog((context, configuration) =>
+            {
+                //var httpAccessor = context.Configuration.Get<HttpContextAccessor>();
+                configuration.ReadFrom.Configuration(context.Configuration);
+                             //.Enrich.WithEcsHttpContext(httpAccessor)
+                             //.WriteTo.Elasticsearch(new Serilog.Sinks.Elasticsearch.ElasticsearchSinkOptions(new Uri(configuration[]);
+            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

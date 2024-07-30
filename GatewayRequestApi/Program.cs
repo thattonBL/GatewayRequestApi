@@ -8,6 +8,9 @@ using IntegrationEventLogEF.Services;
 using System.Data.Common;
 using Message.Infrastructure.Repositories;
 using Serilog;
+using Elastic.CommonSchema.Serilog;
+using Elastic.Serilog.Sinks;
+using Elastic.Ingest.Elasticsearch;
 
 namespace GatewayRequestApi
 {
@@ -23,10 +26,15 @@ namespace GatewayRequestApi
 
             builder.Host.UseSerilog((context, configuration) =>
             {
-                //var httpAccessor = context.Configuration.Get<HttpContextAccessor>();
-                configuration.ReadFrom.Configuration(context.Configuration);
-                             //.Enrich.WithEcsHttpContext(httpAccessor)
-                             //.WriteTo.Elasticsearch(new Serilog.Sinks.Elasticsearch.ElasticsearchSinkOptions(new Uri(configuration[]);
+                var httpAccessor = context.Configuration.Get<HttpContextAccessor>();
+                configuration.ReadFrom.Configuration(context.Configuration)
+                             .Enrich.WithEcsHttpContext(httpAccessor)
+                             .Enrich.WithEnvironmentName()
+                             .WriteTo.ElasticCloud(context.Configuration["ElasticCloud:CloudId"], context.Configuration["ElasticCloud:CloudUser"], context.Configuration["ElasticCloud:CloudPass"], opts =>
+                             {
+                                 opts.DataStream = new Elastic.Ingest.Elasticsearch.DataStreams.DataStreamName("gateway-request-api-new-logs");
+                                 opts.BootstrapMethod = BootstrapMethod.Failure;
+                             });               
             });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -48,6 +56,17 @@ namespace GatewayRequestApi
             }
 
             builder.Services.AddDbContext<MessageContext>(options => options.UseSqlServer(connectionString));
+            //builder.Services.AddDbContext<MessageContext>(options =>
+            //{
+            //    options.UseSqlServer(connectionString,
+            //        sqlServerOptionsAction: sqlOptions =>
+            //        {
+            //            sqlOptions.EnableRetryOnFailure(
+            //                            maxRetryCount: 5,
+            //                            maxRetryDelay: TimeSpan.FromSeconds(30),
+            //                            errorNumbersToAdd: null);
+            //        });
+            //});
 
             builder.Services.AddTransient<Func<DbConnection, IIntegrationEventLogService>>(sp => (DbConnection c) => new IntegrationEventLogService(c));
 

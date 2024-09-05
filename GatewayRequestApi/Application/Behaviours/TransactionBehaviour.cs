@@ -37,37 +37,26 @@ public class TransactionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
                 return await next();
             }
             var strategy = _dbContext.Database.CreateExecutionStrategy();
-            var retryPolicy = Policy
-            .Handle<Exception>() // Specify the exceptions you want to handle
-            .WaitAndRetryAsync(5, retryAttempt =>
-                TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), // Exponential backoff
-                (exception, timeSpan, retryCount, context) =>
-                {
-                    _logger.LogWarning(exception, "Retry {RetryCount} encountered an error: {ExceptionMessage}. Delaying for {Delay} seconds.", retryCount, exception.Message, timeSpan.TotalSeconds);
-                });
             //I am guessing this is kind of like an SQL transaction in C# with EF Core and defines how any database commit to Message Context occurs
             await strategy.ExecuteAsync(async () =>
             {
-                await retryPolicy.ExecuteAsync(async () =>
+                Guid transactionId;
+
+                await using var transaction = await _dbContext.BeginTransactionAsync();
+                using (_logger.BeginScope(new List<KeyValuePair<string, object>> { new("TransactionContext", transaction.TransactionId) }))
                 {
-                    Guid transactionId;
+                    _logger.LogInformation("Begin transaction {TransactionId} for {CommandName} ({@Command})", transaction.TransactionId, typeName, request);
 
-                    await using var transaction = await _dbContext.BeginTransactionAsync();
-                    using (_logger.BeginScope(new List<KeyValuePair<string, object>> { new("TransactionContext", transaction.TransactionId) }))
-                    {
-                        _logger.LogInformation("Begin transaction {TransactionId} for {CommandName} ({@Command})", transaction.TransactionId, typeName, request);
+                    response = await next();
 
-                        response = await next();
+                    _logger.LogInformation("Commit transaction {TransactionId} for {CommandName}", transaction.TransactionId, typeName);
 
-                        _logger.LogInformation("Commit transaction {TransactionId} for {CommandName}", transaction.TransactionId, typeName);
+                    await _dbContext.CommitTransactionAsync(transaction);
 
-                        await _dbContext.CommitTransactionAsync(transaction);
-
-                        transactionId = transaction.TransactionId;
-                    }
-                    //finally we dispatch the integration events safe inthe knowledge the changes are committed to the database
-                    await _messageIntegrationEventService.PublishEventsThroughEventBusAsync(transactionId);
-                });
+                    transactionId = transaction.TransactionId;
+                }
+                //finally we dispatch the integration events safe inthe knowledge the changes are committed to the database
+                await _messageIntegrationEventService.PublishEventsThroughEventBusAsync(transactionId);
             });
 
             return response;

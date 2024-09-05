@@ -24,12 +24,12 @@ BEGIN
     msg_source varchar(50) NULL,
     msg_target int NOT NULL,
     prty varchar(50) NULL,
-    type int NOT NULL,
+    m_type int NOT NULL,
     ref_source varchar(50) NULL,
     ref_request_id varchar(50) NULL,
     ref_seq_no int NULL,
     dt_created datetime NOT NULL,
-    CONSTRAINT PK_Common_id PRIMARY KEY CLUSTERED (id)
+    CONSTRAINT PK_Common PRIMARY KEY CLUSTERED (m_type, msg_target)
   )
 END
 
@@ -184,7 +184,7 @@ END
 -- ADD FOREIGN KEYS --
 
 ALTER TABLE Gateway.dbo.Common
-  ADD CONSTRAINT FK_Common_messageTypeLookup_id FOREIGN KEY (type) REFERENCES dbo.messageTypeLookup (id)
+  ADD CONSTRAINT FK_Common_messageTypeLookup_id FOREIGN KEY (m_type) REFERENCES dbo.messageTypeLookup (id)
 GO
 
 -- ADD STORED PROCEDURE --

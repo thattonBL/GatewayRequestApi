@@ -1,4 +1,7 @@
 ﻿using Message.Domain.SeedWork;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection.Metadata;
+using System.Security.Cryptography;
 
 namespace Message.Domain.MessageAggregate;
 
@@ -27,8 +30,9 @@ public class RsiMessage : Entity
     private int _reader_type;
     private string _operator_information;
     private string _item_identity;
-
     private bool _isDraft;
+
+    //public virtual messageTypeLookup messageTypeLookup { get; set; }
 
     public static RsiMessage NewDraft()
     {

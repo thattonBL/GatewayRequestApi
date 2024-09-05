@@ -12,7 +12,7 @@ public class MessageContext : DbContext, IUnitOfWork
 {
 
     public const string DEFAULT_SCHEMA = "dbo";
-    public virtual DbSet<Common> Commons { get; set; }
+    public virtual DbSet<CommonMessage> Common { get; set; }
     public virtual DbSet<messageTypeLookup> messageTypeLookups { get; set; }
     public virtual DbSet<ReaMessage> REAs { get; set; }
     public virtual DbSet<REC> RECs { get; set; }
@@ -24,27 +24,7 @@ public class MessageContext : DbContext, IUnitOfWork
 
         modelBuilder.ApplyConfiguration(new RsiMessageEntityTypeConfiguration());
         modelBuilder.ApplyConfiguration(new ReaMessageEntityTypeConfiguration());
-       
-        
-        modelBuilder.Entity<Common>()
-            .Property(e => e.msg_status)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<Common>()
-            .Property(e => e.msg_source)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<Common>()
-            .Property(e => e.prty)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<Common>()
-            .Property(e => e.ref_source)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<Common>()
-            .Property(e => e.ref_request_id)
-            .IsUnicode(false);
+        modelBuilder.ApplyConfiguration(new CommonEntityTypeConfiguration());
 
         modelBuilder.Entity<messageTypeLookup>()
             .Property(e => e.type)
@@ -52,8 +32,8 @@ public class MessageContext : DbContext, IUnitOfWork
 
         modelBuilder.Entity<messageTypeLookup>()
             .HasMany(e => e.Commons)
-            .WithOne(e => e.messageTypeLookup)
-            .HasForeignKey(e => e.type)
+            .WithOne(e => e.messageTypeLookup).IsRequired()
+            .HasForeignKey(e => e.m_type)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<REC>()

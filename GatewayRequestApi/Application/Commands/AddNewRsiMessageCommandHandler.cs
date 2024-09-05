@@ -34,6 +34,7 @@ public class AddNewRsiMessageCommandHandler : IRequestHandler<AddNewRsiMessageCo
         //Create a new integration message for the request and add it to the Integration Event table
         var newRsiMessageIntEvent = new NewRsiMessageSubmittedIntegrationEvent(postedMsgData, NewRsiMessageSubmittedIntegrationEvent.EVENT_NAME);
         await _messageIntegrationEventService.AddAndSaveEventAsync(newRsiMessageIntEvent);
+
         //We could use AutoFac for this but simpley copying properties across with some parsing
         var message = new RsiMessage(postedMsgData.CollectionCode,
             postedMsgData.Shelfmark, postedMsgData.VolumeNumber, postedMsgData.StorageLocationCode, 
@@ -44,12 +45,13 @@ public class AddNewRsiMessageCommandHandler : IRequestHandler<AddNewRsiMessageCo
 
         //Add the new message to the repo
         _messageRepository.Add(message);
-        //Bundles the database commit with the db changes that are the result of the dispatch of any domain events i.e. changes of RSI status. (which we don't currently have)
-        await _messageRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-        //The message has to be saved before we can get its auto generated ID
-        _messageRepository.AddCommon(message.Id);
+        //The message has to be saved before we can get its auto generated ID for the Common Parent entity
+        await _messageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+
+        //Adding the common Entity
+        _messageRepository.AddCommon(MessageType.RSI, message.Id);
         //We just use the direct SaveChanges as we don't need to dispatch Domain Events this time.
-        await _messageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);    
+        await _messageRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
         return true;
     }

@@ -30,10 +30,10 @@ namespace Message.Infrastructure.Repositories
             return _context.REAs.Add(message).Entity;
         }
 
-        public Common AddCommon(int RsiId)
+        public CommonMessage AddCommon(MessageType messageType, int messageId)
         {
-            var newCommon = new Common { dt_created = DateTime.Now, msg_target = RsiId, type = 1 };
-            return _context.Commons.Add(newCommon).Entity;
+            var newCommon = new CommonMessage("", "", messageId, "", (int) messageType, "", "", 0, DateTime.Now);
+            return _context.Common.Add(newCommon).Entity;
         }
     }
 }

@@ -116,8 +116,7 @@ public class RsiMessageEntityTypeConfiguration : IEntityTypeConfiguration<RsiMes
             .HasMaxLength(50)
             .IsUnicode(false);
 
-        builder.Property<string>("_identifier")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
+        builder.Property( i => i.Identifier)
             .HasColumnName("identifier")
             .HasMaxLength(50)
             .IsUnicode(false);

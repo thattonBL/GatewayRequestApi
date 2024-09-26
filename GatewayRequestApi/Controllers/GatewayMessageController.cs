@@ -28,6 +28,13 @@ namespace GatewayRequestApi.Controllers
             return await _mediator.Send(addRsiMessageCommand);
         }
 
+        [Route("cancel")]
+        [HttpPost]
+        public async Task<ActionResult<bool>> CancelMessage([FromBody] CancelMessageCommand cancelMessage)
+        {
+            return await _mediator.Send(cancelMessage);
+        }
+
         [Route("rea")]
         [HttpPost]
         public async Task<ActionResult<bool>> CreateReaMessageFromInput([FromBody] AddNewReaMessageCommand addReaMessageCommand)

@@ -25,12 +25,13 @@ public class RsiMessage : Entity
     private string _reading_room_staff_area;
     private string _seat_number;
     private string _reading_category;
-    private string _identifier;
     private string _reader_name;
     private int _reader_type;
     private string _operator_information;
     private string _item_identity;
     private bool _isDraft;
+
+    public string Identifier { get; set; }
 
     //public virtual messageTypeLookup messageTypeLookup { get; set; }
 
@@ -59,7 +60,7 @@ public class RsiMessage : Entity
         _reading_room_staff_area = String.Empty;
         _seat_number = String.Empty;
         _reading_category = String.Empty;
-        _identifier = String.Empty;
+        Identifier = String.Empty;
         _reader_name = String.Empty;
         _reader_type = 0;
         _operator_information = String.Empty;
@@ -85,7 +86,7 @@ public class RsiMessage : Entity
         _reading_room_staff_area = reading_room_staff_area;
         _seat_number = seat_number;
         _reading_category = reading_category;
-        _identifier = identifier;
+        Identifier = identifier;
         _reader_name = reader_name;
         _reader_type = reader_type;
         _operator_information = operator_information;

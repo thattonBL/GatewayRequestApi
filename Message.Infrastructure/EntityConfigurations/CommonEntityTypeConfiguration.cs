@@ -74,10 +74,12 @@ internal class CommonEntityTypeConfiguration : IEntityTypeConfiguration<CommonMe
             .HasColumnName("dt_created")
             .IsRequired();
 
-        // Unique Index configuration
-        builder.HasIndex(c => new { c.msg_target, c.m_type })
-            .IsUnique()
-            .HasDatabaseName("UK_Common");
+        // Foreign Key configuration
+        builder.HasOne(c => c.messageTypeLookup)
+            .WithMany(m => m.Commons)
+            .HasForeignKey(c => c.m_type)
+            .HasConstraintName("FK_Common_messageTypeLookup_id")
+            .OnDelete(DeleteBehavior.Cascade);
 
         //// Foreign Key configuration
         //builder.HasOne(c => c.RSIs)

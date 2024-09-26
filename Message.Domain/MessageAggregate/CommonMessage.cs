@@ -1,4 +1,6 @@
-﻿using Message.Domain.SeedWork;
+﻿using Message.Domain.Enums;
+using Message.Domain.Events;
+using Message.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,7 +20,7 @@ public class CommonMessage : Entity
     private int? _ref_seq_no;
     private DateTime _dt_created;
     private int _msg_target;
-    private int _m_type;
+    private int? _m_type;
 
     public int msg_target
     {
@@ -32,7 +34,7 @@ public class CommonMessage : Entity
         }
     }
 
-    public int m_type
+    public int? m_type
     {
         get
         {
@@ -41,6 +43,14 @@ public class CommonMessage : Entity
         set
         {
             _m_type = value;
+        }
+    }
+
+    public string msgStatus
+    {
+        get
+        {
+            return _msg_status;
         }
     }
 
@@ -60,7 +70,7 @@ public class CommonMessage : Entity
         messageTypeLookup = new messageTypeLookup(); // Initialize the property
     }
 
-    public CommonMessage(string msgStatus, string msgSource, int msgTarget, string mPrty, int mType, string refSource, string refRequestId, int refSeqNo, DateTime dtCreated)
+    public CommonMessage(string msgStatus, string msgSource, int msgTarget, string mPrty, int mType, string refSource, string refRequestId, int refSeqNo, DateTime dtCreated, messageTypeLookup messageTypeLookup)
     {
         _msg_status = msgStatus;
         _msg_source = msgSource;
@@ -71,6 +81,12 @@ public class CommonMessage : Entity
         _ref_request_id = refRequestId;
         _ref_seq_no = refSeqNo;
         _dt_created = dtCreated;
-        messageTypeLookup = new messageTypeLookup(); // Initialize the property
+        this.messageTypeLookup = messageTypeLookup ?? throw new ArgumentNullException(nameof(messageTypeLookup));
+    }
+
+    public void SetCancelledStatus(string msgIdentifier)
+    {
+        _msg_status = MessageStatusEnum.Cancelled.ToString();
+        AddDomainEvent(new RequestCancelledDomainEvent(this, msgIdentifier));
     }
 }

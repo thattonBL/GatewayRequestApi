@@ -49,10 +49,9 @@ public class AddNewRsiMessageCommandHandler : IRequestHandler<AddNewRsiMessageCo
         await _messageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
         //Adding the common Entity
-        _messageRepository.AddCommon(MessageType.RSI, message.Id);
+        await _messageRepository.AddCommon(MessageType.RSI, message.Id);
         //We just use the direct SaveChanges as we don't need to dispatch Domain Events this time.
         await _messageRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-
         return true;
     }
 }

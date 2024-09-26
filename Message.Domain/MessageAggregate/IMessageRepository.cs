@@ -10,6 +10,8 @@ namespace Message.Infrastructure.Repositories
 
         ReaMessage Add(ReaMessage message);
 
-        CommonMessage AddCommon(MessageType messageType, int messageId);
+        Task<CommonMessage> AddCommon(MessageType messageType, int messageId);
+
+        Task<Tuple<CommonMessage, string>> GetCommonAsync(string msgId);
     }
 }

@@ -20,7 +20,7 @@ namespace Message.Infrastructure.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public RsiMessage Add(RsiMessage message)
+        public async Task<RsiMessage> Add(RsiMessage message)
         {
             //need to add new Queue, Common and RSI message not just RSI
             return _context.RSIs.Add(message).Entity;

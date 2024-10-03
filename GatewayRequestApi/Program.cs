@@ -68,6 +68,8 @@ namespace GatewayRequestApi
             //        });
             //});
 
+
+            builder.Services.AddScoped<IMessageQueries>(sp => new MessageQueries(constr: connectionString));
             builder.Services.AddTransient<Func<DbConnection, IIntegrationEventLogService>>(sp => (DbConnection c) => new IntegrationEventLogService(c));
 
             builder.Services.AddTransient<IMessageIntegrationEventService, MessageIntegrationEventService>();

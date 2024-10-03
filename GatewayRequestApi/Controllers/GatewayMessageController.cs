@@ -1,4 +1,5 @@
 ﻿using GatewayRequestApi.Application.Commands;
+using GatewayRequestApi.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +12,31 @@ namespace GatewayRequestApi.Controllers
     public class GatewayMessageController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMessageQueries _messageQueries;
         private readonly ILogger<GatewayMessageController> _logger;
 
-        public GatewayMessageController(IMediator mediator, ILogger<GatewayMessageController> logger)
+        public GatewayMessageController(IMessageQueries messageQueries, IMediator mediator, ILogger<GatewayMessageController> logger)
         {
+            _messageQueries = messageQueries ?? throw new ArgumentException(nameof(messageQueries));
             _mediator = mediator ?? throw new ArgumentException(nameof(mediator));
             _logger = logger ?? throw new ArgumentException(nameof(logger));
+        }
+
+        [Route("rsi")]
+        [HttpGet]
+        [ProducesResponseType(typeof(RsiMessageView), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<RsiMessageView>> GetRsiMessageAsync(string identifier)
+        {
+            try
+            {
+                var message = await _messageQueries.GetRsiMessageAsync(identifier);
+                return message;
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
 
         // POST api/<GatewayMessageController>

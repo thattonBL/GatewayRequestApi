@@ -56,6 +56,8 @@ public class CommonMessage : Entity
 
     public messageTypeLookup messageTypeLookup { get; set; }
 
+    public dynamic ChildMessage { get; set; }
+
     protected CommonMessage()
     {
         _msg_status = String.Empty;

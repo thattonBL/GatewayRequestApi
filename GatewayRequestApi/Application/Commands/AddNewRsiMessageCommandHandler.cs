@@ -43,8 +43,9 @@ public class AddNewRsiMessageCommandHandler : IRequestHandler<AddNewRsiMessageCo
                         postedMsgData.DtRequired, postedMsgData.Route, postedMsgData.ReadingRoomStaffArea, postedMsgData.SeatNumber, postedMsgData.ReadingCategory, postedMsgData.Identifier,
                             postedMsgData.ReaderName, Int32.Parse(postedMsgData.ReaderType), postedMsgData.OperatorInformation, postedMsgData.ItemIdentity);
 
+        //NOTE: Because of the Transaction Behaviour class these transaction are executed as one atomic operation 
         //Add the new message to the repo
-        _messageRepository.Add(message);
+        await _messageRepository.Add(message);
         //The message has to be saved before we can get its auto generated ID for the Common Parent entity
         await _messageRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 

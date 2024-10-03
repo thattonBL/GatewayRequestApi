@@ -15,8 +15,6 @@ public class MessageContext : DbContext, IUnitOfWork
     public virtual DbSet<CommonMessage> Common { get; set; }
     public virtual DbSet<messageTypeLookup> messageTypeLookups { get; set; }
     public virtual DbSet<ReaMessage> REAs { get; set; }
-    public virtual DbSet<REC> RECs { get; set; }
-    public virtual DbSet<RIR> RIRs { get; set; }
     public virtual DbSet<RsiMessage> RSIs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,38 +33,6 @@ public class MessageContext : DbContext, IUnitOfWork
             .WithOne(e => e.messageTypeLookup).IsRequired()
             .HasForeignKey(e => e.m_type)
             .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<REC>()
-            .Property(e => e.dt_of_action)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<REC>()
-            .Property(e => e.request_response_flag)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<REC>()
-            .Property(e => e.failure_code)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<REC>()
-            .Property(e => e.text_message)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<REC>()
-            .Property(e => e.stack_identity)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<REC>()
-            .Property(e => e.tray_identity)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<RIR>()
-            .Property(e => e.outcome)
-            .IsUnicode(false);
-
-        modelBuilder.Entity<RIR>()
-            .Property(e => e.reason)
-            .IsUnicode(false);
     }
 
     private readonly IMediator _mediator;
@@ -148,7 +114,7 @@ public class MessageContext : DbContext, IUnitOfWork
 
 }
 
-public class OrderingContextDesignFactory : IDesignTimeDbContextFactory<MessageContext>
+/*public class OrderingContextDesignFactory : IDesignTimeDbContextFactory<MessageContext>
 {
     public MessageContext CreateDbContext(string[] args)
     {
@@ -195,4 +161,4 @@ public class OrderingContextDesignFactory : IDesignTimeDbContextFactory<MessageC
             return Task.CompletedTask;
         }
     }
-}
+}*/

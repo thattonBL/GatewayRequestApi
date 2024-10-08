@@ -1,12 +1,6 @@
 ﻿using Message.Domain.Enums;
 using Message.Domain.Events;
 using Message.Domain.SeedWork;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Message.Domain.MessageAggregate;
 

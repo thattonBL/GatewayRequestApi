@@ -31,7 +31,7 @@ public class RsiMessage : Entity
     private string _item_identity;
     private bool _isDraft;
 
-    public string Identifier { get; set; }
+    public string Identifier { get; private set; }
 
     //public virtual messageTypeLookup messageTypeLookup { get; set; }
 

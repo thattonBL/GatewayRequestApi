@@ -24,4 +24,30 @@ public record RsiMessageView
     public string operator_information { get; init; }
     public string item_identity { get; init; }
     public string identifier { get; set; }
+
+    public RsiMessageView()
+    {
+        collection_code = string.Empty;
+        shelfmark = string.Empty;
+        volume_number = string.Empty;
+        storage_location_code = string.Empty;
+        author = string.Empty;
+        title = string.Empty;
+        publication_date = default;
+        periodical_date = default;
+        article_line1 = string.Empty;
+        article_line2 = string.Empty;
+        catalogue_record_url = string.Empty;
+        further_details_url = string.Empty;
+        dt_required = string.Empty;
+        route = string.Empty;
+        reading_room_staff_area = string.Empty;
+        seat_number = string.Empty;
+        reading_category = string.Empty;
+        reader_name = string.Empty;
+        reader_type = default;
+        operator_information = string.Empty;
+        item_identity = string.Empty;
+        identifier = string.Empty;
+    }
 }

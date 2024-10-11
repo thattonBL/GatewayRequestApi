@@ -81,7 +81,7 @@ namespace GatewayRequestApi
                 cfg.RegisterServicesFromAssemblyContaining(typeof(Program));
 
                 cfg.AddOpenBehavior(typeof(LoggingBehaviour<,>));
-                //cfg.AddOpenBehavior(typeof(ValidatorBehavior<,>));
+                cfg.AddOpenBehavior(typeof(ValidatorBehavior<,>));
                 cfg.AddOpenBehavior(typeof(TransactionBehaviour<,>));
             });
             

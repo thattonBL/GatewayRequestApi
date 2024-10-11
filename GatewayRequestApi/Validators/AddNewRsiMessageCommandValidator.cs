@@ -9,9 +9,9 @@ public class AddNewRsiMessageCommandValidator : AbstractValidator<AddNewRsiMessa
     public AddNewRsiMessageCommandValidator(ILogger<AddNewRsiMessageCommandValidator> logger)
     {
         RuleFor(command => command.Message.ItemIdentity).NotEmpty();
-        RuleFor(command => command.Message.PublicationDate).NotEmpty().Must(BeValidDateString).WithMessage("Date format must be dd-mm-yyyy");
-        RuleFor(command => command.Message.PeriodicalDate).NotEmpty().Must(BeValidDateString).WithMessage("Date format must be dd-mm-yyyy");
-        RuleFor(command => command.Message.ReaderType).NotEmpty().Must(BeValidDateString).WithMessage("Date format must be dd-mm-yyyy");
+        RuleFor(command => command.Message.PublicationDate).NotEmpty().Must(BeValidDateString).WithMessage("Date format must be dd-MM-yyyy");
+        RuleFor(command => command.Message.PeriodicalDate).NotEmpty().Must(BeValidDateString).WithMessage("Date format must be dd-MM-yyyy");
+        RuleFor(command => command.Message.ReaderType).NotEmpty().Must(BeValidIntegerString).WithMessage("Must be an Integer");
 
         logger.LogTrace("INSTANCE CREATED - {ClassName}", GetType().Name);
     }

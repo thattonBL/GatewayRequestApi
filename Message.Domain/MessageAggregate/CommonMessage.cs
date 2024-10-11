@@ -50,7 +50,7 @@ public class CommonMessage : Entity
 
     public messageTypeLookup messageTypeLookup { get; set; }
 
-    public dynamic ChildMessage { get; set; }
+    //public dynamic ChildMessage { get; set; }
 
     protected CommonMessage()
     {
@@ -80,9 +80,10 @@ public class CommonMessage : Entity
         this.messageTypeLookup = messageTypeLookup ?? throw new ArgumentNullException(nameof(messageTypeLookup));
     }
 
-    public void SetCancelledStatus(string msgIdentifier)
+    public virtual bool SetCancelledStatus(string msgIdentifier)
     {
         _msg_status = MessageStatusEnum.Cancelled.ToString();
         AddDomainEvent(new RequestCancelledDomainEvent(this, msgIdentifier));
+        return true;
     }
 }

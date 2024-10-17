@@ -11,10 +11,11 @@ using Serilog;
 using Elastic.CommonSchema.Serilog;
 using Elastic.Serilog.Sinks;
 using Elastic.Ingest.Elasticsearch;
+using GatewayRequestApi.Queries;
 
 namespace GatewayRequestApi
 {
-    public class Program
+    public partial class Program
     {
         public static void Main(string[] args)
         {

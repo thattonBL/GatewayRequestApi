@@ -42,6 +42,9 @@ namespace GatewayRequestApi.Controllers
         // POST api/<GatewayMessageController>
         [Route("rsi")]       
         [HttpPost]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> CreateRsiMessageFromInput([FromBody] AddNewRsiMessageCommand addRsiMessageCommand)
         {
             //TODO: Add logging

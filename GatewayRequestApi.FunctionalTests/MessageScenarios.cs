@@ -1,6 +1,8 @@
 ﻿using EventBus.Events;
 using GatewayRequestApi.Application.IntegrationEvents;
+using GatewayRequestApi.Application.IntegrationEvents.Events;
 using GatewayRequestApi.Queries;
+using Message.Domain.MessageAggregate;
 using Message.Infrastructure;
 using Message.Infrastructure.Repositories;
 using Microsoft.AspNetCore.TestHost;
@@ -37,6 +39,7 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
     [Fact]
     public async Task Get_message_by_identifier_returns_ok_status_code()
     {
+        //Arrange
         var _mockMessageQueries = new Mock<IMessageQueries>();
         _mockMessageQueries.Setup(m => m.GetRsiMessageAsync(It.IsAny<string>())).Returns(Task.FromResult(new RsiMessageView()));
         var client = _factory.WithWebHostBuilder(builder =>
@@ -47,9 +50,35 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
             });
         }).CreateClient();
         var identifier = "ABC123";
+
+        //Act
         var response = await client.GetAsync($"api/GatewayMessage/rsi?identifier={identifier}");
         var s = await response.Content.ReadAsStringAsync();
+
+        //Assert
         response.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task Get_message_by_unknown_identifier_returns_404_not_found()
+    {
+        //Arrange
+        var _mockMessageQueries = new Mock<IMessageQueries>();
+        _mockMessageQueries.Setup(m => m.GetRsiMessageAsync(It.IsAny<string>())).Throws<Exception>();
+        var client = _factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureTestServices(services =>
+            {
+                services.AddScoped<IMessageQueries>(q => _mockMessageQueries.Object);
+            });
+        }).CreateClient();
+        var identifier = "ABC123";
+
+        //Act
+        var response = await client.GetAsync($"api/GatewayMessage/rsi?identifier={identifier}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
@@ -81,6 +110,11 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        _mockMsgIntegrationEventService.Verify(m => m.AddAndSaveEventAsync(It.IsAny<NewRsiMessageSubmittedIntegrationEvent>()), Times.Once);
+        _mockMsgRepo.Verify(r => r.Add(It.IsAny<RsiMessage>()), Times.Once);
+        _mockMsgRepo.Verify(r => r.AddCommon(MessageType.RSI, It.IsAny<int>()), Times.Once);
+        _mockMsgRepo.Verify(r => r.UnitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mockMsgRepo.Verify(r => r.UnitOfWork.SaveEntitiesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -112,6 +146,11 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
 
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+        _mockMsgIntegrationEventService.Verify(m => m.AddAndSaveEventAsync(It.IsAny<NewRsiMessageSubmittedIntegrationEvent>()), Times.Never);
+        _mockMsgRepo.Verify(r => r.Add(It.IsAny<RsiMessage>()), Times.Never);
+        _mockMsgRepo.Verify(r => r.AddCommon(MessageType.RSI, It.IsAny<int>()), Times.Never);
+        _mockMsgRepo.Verify(r => r.UnitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _mockMsgRepo.Verify(r => r.UnitOfWork.SaveEntitiesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -139,6 +178,7 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
                 readingRoomStaffArea = "true",
                 seatNumber = "15",
                 readingCategory = "fiction",
+                //identifier = "GHJ456", Remove identifier to cause validation to fail
                 readerName = "Herod Antipas",
                 readerType = "1",
                 operatorInformation = "Have a word",
@@ -171,6 +211,11 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        _mockMsgIntegrationEventService.Verify(m => m.AddAndSaveEventAsync(It.IsAny<NewRsiMessageSubmittedIntegrationEvent>()), Times.Never);
+        _mockMsgRepo.Verify(r => r.Add(It.IsAny<RsiMessage>()), Times.Never);
+        _mockMsgRepo.Verify(r => r.AddCommon(MessageType.RSI, It.IsAny<int>()), Times.Never);
+        _mockMsgRepo.Verify(r => r.UnitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _mockMsgRepo.Verify(r => r.UnitOfWork.SaveEntitiesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     private static string SerializeCommandMessage()

@@ -45,7 +45,7 @@ namespace GatewayRequestApi
             //Adds the Event Bus required for integration events
             builder.AddServiceDefaults();
 
-            // Application Insights logging
+            // Configure application insight logging
             builder.Logging.AddApplicationInsights(
                     configureTelemetryConfiguration: (config) =>
                     config.ConnectionString = builder.Configuration.GetConnectionString("ApplicationInsightConnectionString"),

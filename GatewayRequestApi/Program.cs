@@ -8,10 +8,8 @@ using IntegrationEventLogEF.Services;
 using System.Data.Common;
 using Message.Infrastructure.Repositories;
 using Serilog;
-using Elastic.CommonSchema.Serilog;
-using Elastic.Serilog.Sinks;
-using Elastic.Ingest.Elasticsearch;
 using GatewayRequestApi.Queries;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace GatewayRequestApi
 {
@@ -24,19 +22,6 @@ namespace GatewayRequestApi
             // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddHttpContextAccessor();
-
-            builder.Host.UseSerilog((context, configuration) =>
-            {
-                var httpAccessor = context.Configuration.Get<HttpContextAccessor>();
-                configuration.ReadFrom.Configuration(context.Configuration)
-                             .Enrich.WithEcsHttpContext(httpAccessor)
-                             .Enrich.WithEnvironmentName()
-                             .WriteTo.ElasticCloud(context.Configuration["ElasticCloud:CloudId"], context.Configuration["ElasticCloud:CloudUser"], context.Configuration["ElasticCloud:CloudPass"], opts =>
-                             {
-                                 opts.DataStream = new Elastic.Ingest.Elasticsearch.DataStreams.DataStreamName("gateway-request-api-new-logs");
-                                 opts.BootstrapMethod = BootstrapMethod.Failure;
-                             });
-            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

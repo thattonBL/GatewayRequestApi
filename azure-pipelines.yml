@@ -1,0 +1,42 @@
+trigger: none  # Set to 'none' to avoid automatic triggers; this will be triggered by the Docker Hub webhook.
+
+# Optionally, schedule the pipeline to run at specific intervals to check for new images
+schedules:
+  - cron: "0 * * * *"  # Every hour
+    displayName: "Scheduled hourly trigger"
+    branches:
+      include:
+        - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  AZURE_CONTAINER_APP_NAME: 'gateway-request-api-iac'
+  RESOURCE_GROUP: 'Gateway-IAC-Resources'
+  DOCKER_IMAGE: 'attonbomb/gateway-request-api:latest'  # Replace with your Docker Hub image path
+
+steps:
+  - task: Docker@2
+    inputs:
+      command: 'login'
+      containerRegistry: '<Your_Docker_Hub_Service_Connection>'
+      username: '<DockerHub_Username>'    # Use this if your image is private
+      password: '<DockerHub_Access_Token>'  # Use this if your image is private
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: '<Your_Azure_Service_Connection>'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        echo "Updating Azure Container App with the latest image"
+
+        # Update the Azure Container App to pull the latest image
+        az containerapp update \
+          --name $AZURE_CONTAINER_APP_NAME \
+          --resource-group $RESOURCE_GROUP \
+          --image $DOCKER_IMAGE
+
+        echo "Container App updated successfully"
+

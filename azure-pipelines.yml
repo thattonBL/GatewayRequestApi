@@ -1,12 +1,11 @@
 trigger: none  # Set to 'none' to avoid automatic triggers; this will be triggered by the Docker Hub webhook.
 
-# Optionally, schedule the pipeline to run at specific intervals to check for new images
-schedules:
-  - cron: "0 * * * *"  # Every hour
-    displayName: "Scheduled hourly trigger"
-    branches:
-      include:
-        - main
+resources:
+  pipelines:
+    - pipeline: trigger_pipeline
+      source: 'Trigger Azure DevOps Pipeline'
+      project: 'Gateway'
+      trigger: true  # Enable trigger from GitHub Actions pipeline
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -32,9 +31,9 @@ steps:
 
         # Update the Azure Container App to pull the latest image
         az containerapp update \
-          --name $AZURE_CONTAINER_APP_NAME \
-          --resource-group $RESOURCE_GROUP \
-          --image $DOCKER_IMAGE
+          --name gateway-request-api-iac
+          --resource-group Gateway-IAC-Resources
+          --image attonbomb/gateway-request-api:latest
 
         echo "Container App updated successfully"
 

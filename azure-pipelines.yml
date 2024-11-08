@@ -24,7 +24,7 @@ steps:
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: '<Your_Azure_Service_Connection>'
+      azureSubscription: 'thomas-hatton-VS-enterprise-sub-sc'
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |

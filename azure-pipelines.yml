@@ -20,9 +20,7 @@ steps:
   - task: Docker@2
     inputs:
       command: 'login'
-      containerRegistry: '<Your_Docker_Hub_Service_Connection>'
-      username: '<DockerHub_Username>'    # Use this if your image is private
-      password: '<DockerHub_Access_Token>'  # Use this if your image is private
+      containerRegistry: 'attonbomb-DockerHub-SC'
 
   - task: AzureCLI@2
     inputs:

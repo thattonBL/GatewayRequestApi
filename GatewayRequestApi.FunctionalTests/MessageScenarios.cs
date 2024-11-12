@@ -22,6 +22,7 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
 
     public MessageScenarios(FunctionalTestWebAppFactory factory)
     {
+        //
         _factory = factory;
     }
     
@@ -111,6 +112,7 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         _mockMsgIntegrationEventService.Verify(m => m.AddAndSaveEventAsync(It.IsAny<NewRsiMessageSubmittedIntegrationEvent>()), Times.Once);
+        _mockMsgIntegrationEventService.Verify(m => m.PublishEventsThroughEventBusAsync(It.IsAny<Guid>()), Times.Once);
         _mockMsgRepo.Verify(r => r.Add(It.IsAny<RsiMessage>()), Times.Once);
         _mockMsgRepo.Verify(r => r.AddCommon(MessageType.RSI, It.IsAny<int>()), Times.Once);
         _mockMsgRepo.Verify(r => r.UnitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -147,6 +149,7 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
         // Assert
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
         _mockMsgIntegrationEventService.Verify(m => m.AddAndSaveEventAsync(It.IsAny<NewRsiMessageSubmittedIntegrationEvent>()), Times.Never);
+        _mockMsgIntegrationEventService.Verify(m => m.PublishEventsThroughEventBusAsync(It.IsAny<Guid>()), Times.Never);
         _mockMsgRepo.Verify(r => r.Add(It.IsAny<RsiMessage>()), Times.Never);
         _mockMsgRepo.Verify(r => r.AddCommon(MessageType.RSI, It.IsAny<int>()), Times.Never);
         _mockMsgRepo.Verify(r => r.UnitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
@@ -212,6 +215,7 @@ public class MessageScenarios : IClassFixture<FunctionalTestWebAppFactory>
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         _mockMsgIntegrationEventService.Verify(m => m.AddAndSaveEventAsync(It.IsAny<NewRsiMessageSubmittedIntegrationEvent>()), Times.Never);
+        _mockMsgIntegrationEventService.Verify(m => m.PublishEventsThroughEventBusAsync(It.IsAny<Guid>()), Times.Never);
         _mockMsgRepo.Verify(r => r.Add(It.IsAny<RsiMessage>()), Times.Never);
         _mockMsgRepo.Verify(r => r.AddCommon(MessageType.RSI, It.IsAny<int>()), Times.Never);
         _mockMsgRepo.Verify(r => r.UnitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);

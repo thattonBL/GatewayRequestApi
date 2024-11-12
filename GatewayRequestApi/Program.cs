@@ -30,10 +30,12 @@ namespace GatewayRequestApi
             //Adds the Event Bus required for integration events
             builder.AddServiceDefaults();
 
+            var appInsightsConnectionString = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("APP_INS")) ? builder.Configuration.GetConnectionString("ApplicationInsightConnectionString") : Environment.GetEnvironmentVariable("APP_INS");
+
             // Configure application insight logging
             builder.Logging.AddApplicationInsights(
                     configureTelemetryConfiguration: (config) =>
-                    config.ConnectionString = builder.Configuration.GetConnectionString("ApplicationInsightConnectionString"),
+                    config.ConnectionString = appInsightsConnectionString,
                     configureApplicationInsightsLoggerOptions: (options) => { }
                 );
 
@@ -43,11 +45,12 @@ namespace GatewayRequestApi
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+            var dbUser = Environment.GetEnvironmentVariable("DB_USER");
             var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
 
             if (connectionString != null)
             {
-                connectionString = connectionString.Replace("{#host}", dbHost).Replace("{#dbName}", dbName).Replace("{#dbPassword}", dbPassword);
+                connectionString = connectionString.Replace("{#host}", dbHost).Replace("{#dbName}", dbName).Replace("{#dbUser}", dbUser).Replace("{#dbPassword}", dbPassword);
             }
 
             builder.Services.AddDbContext<MessageContext>(options => options.UseSqlServer(connectionString));

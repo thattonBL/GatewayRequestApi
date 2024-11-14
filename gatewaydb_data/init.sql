@@ -177,7 +177,7 @@ END
 BEGIN
   IF NOT EXISTS(SELECT top 1 1 FROM Gateway.dbo.Common)
   BEGIN
-    INSERT INTO Gateway.dbo.Common(msg_status, msg_source, msg_target, prty, type, ref_source, ref_request_id, ref_seq_no, dt_created) VALUES ('Processing', 'B33', 1, NULL, 1, NULL, NULL, NULL, '2024-03-13 00:00:00.000');
+    INSERT INTO Gateway.dbo.Common(msg_status, msg_source, msg_target, prty, m_type, ref_source, ref_request_id, ref_seq_no, dt_created) VALUES ('Processing', 'B33', 1, NULL, 1, NULL, NULL, NULL, '2024-03-13 00:00:00.000');
   END
 END
 

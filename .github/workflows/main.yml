@@ -41,3 +41,5 @@ jobs:
           azure-devops-project-url: ${{ secrets.AZURE_DEVOPS_PROJECT_URL }}
           pipeline-name: 'thattonBL.GatewayRequestApi'
           azure-devops-token: ${{ secrets.AZURE_DEVOPS_PAT }}
+      
+      - uses: actions/checkout@v2

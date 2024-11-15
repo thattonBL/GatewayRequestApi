@@ -1,11 +1,11 @@
-trigger: none  # Set to 'none' to avoid automatic triggers; this will be triggered by the Docker Hub webhook.
+trigger: none
 
-resources:
-  pipelines:
-    - pipeline: trigger_pipeline
-      source: 'thattonBL.GatewayRequestApi'
-      project: 'Gateway'
-      trigger: true  # Enable trigger from GitHub Actions pipeline
+#resources:
+ # pipelines:
+  #  - pipeline: trigger_pipeline
+   #   source: 'thattonBL.GatewayRequestApi'
+    #  project: 'Gateway'
+     # trigger: true  # Enable trigger from GitHub Actions pipeline
 
 pool:
   vmImage: 'ubuntu-latest'

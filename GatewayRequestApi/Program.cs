@@ -42,15 +42,10 @@ namespace GatewayRequestApi
             builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("gatewayRequestAPI", LogLevel.Trace);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-            var dbName = Environment.GetEnvironmentVariable("DB_NAME");
-            var dbUser = Environment.GetEnvironmentVariable("DB_USER");
-            var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
-
-            if (connectionString != null)
+            var connectionString = Environment.GetEnvironmentVariable("SQL_DB_CONNECTION_STRING");
+            if (String.IsNullOrEmpty(connectionString))
             {
-                connectionString = connectionString.Replace("{#host}", dbHost).Replace("{#dbName}", dbName).Replace("{#dbUser}", dbUser).Replace("{#dbPassword}", dbPassword);
+                connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             }
 
             builder.Services.AddDbContext<MessageContext>(options => options.UseSqlServer(connectionString));

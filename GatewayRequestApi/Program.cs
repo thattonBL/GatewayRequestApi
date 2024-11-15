@@ -92,7 +92,7 @@ namespace GatewayRequestApi
             app.UseHttpsRedirection();
             app.UseAuthorization();
 
-            app.UseSerilogRequestLogging();
+            //app.UseSerilogRequestLogging();
 
             using (var scope = app.Services.CreateScope())
             {

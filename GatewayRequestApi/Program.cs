@@ -30,7 +30,7 @@ namespace GatewayRequestApi
             //Adds the Event Bus required for integration events
             builder.AddServiceDefaults();
 
-            var appInsightsConnectionString = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("APP_INS")) ? builder.Configuration.GetConnectionString("ApplicationInsightConnectionString") : Environment.GetEnvironmentVariable("APP_INS");
+            var appInsightsConnectionString = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING")) ? builder.Configuration.GetConnectionString("ApplicationInsightConnectionString") : Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
 
             // Configure application insight logging
             builder.Logging.AddApplicationInsights(

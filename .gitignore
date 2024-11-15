@@ -5,5 +5,3 @@ Message.Domain/obj
 Message.Infrastructure/obj
 obj
 GatewayRequestApi/Properties/PublishProfiles
-BuildingBlocks
-Common

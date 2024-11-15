@@ -23,7 +23,7 @@ steps:
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: 'thomas-hatton-VS-enterprise-sub-sc'
+      azureSubscription: 'Gateway-Resources-IAC-MI-Connection'
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |

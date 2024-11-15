@@ -36,7 +36,7 @@ jobs:
 
       # Step 5: Trigger Azure Release Pipeline
       - name: Trigger Azure DevOps Pipeline
-        uses: azure/pipelines/actions/trigger-pipeline@v1
+        uses: Azure/pipelines@v1.2
         with:
           azure-devops-project-url: ${{ secrets.AZURE_DEVOPS_PROJECT_URL }}
           pipeline-name: 'thattonBL.GatewayRequestApi'

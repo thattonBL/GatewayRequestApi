@@ -3,7 +3,7 @@ trigger: none  # Set to 'none' to avoid automatic triggers; this will be trigger
 resources:
   pipelines:
     - pipeline: trigger_pipeline
-      source: 'Trigger Azure DevOps Pipeline'
+      source: 'thattonBL.GatewayRequestApi'
       project: 'Gateway'
       trigger: true  # Enable trigger from GitHub Actions pipeline
 
@@ -12,7 +12,7 @@ pool:
 
 variables:
   AZURE_CONTAINER_APP_NAME: 'gateway-request-api-iac'
-  RESOURCE_GROUP: 'Gateway-IAC-Resources'
+  RESOURCE_GROUP: 'Gateway-Resources-IAC'
   DOCKER_IMAGE: 'attonbomb/gateway-request-api:latest'  # Replace with your Docker Hub image path
 
 steps:

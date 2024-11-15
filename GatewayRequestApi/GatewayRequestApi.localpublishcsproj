@@ -13,7 +13,6 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Elastic.Serilog.Sinks" Version="8.11.1" />
-    <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -23,18 +22,13 @@
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-	<PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.22.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="..\GatewayRequestApi.FunctionalTests\GatewayRequestApi.FunctionalTests.csproj"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus.csproj" />
-    <ProjectReference Include="..\..\..\BuildingBlocks\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
-    <ProjectReference Include="..\..\..\Common\Events.Common\Events.Common.csproj" />
-    <ProjectReference Include="..\..\..\Common\Services.Common\Services.Common.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\EventBus\EventBus.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
+    <ProjectReference Include="..\Common\Events.Common\Events.Common.csproj" />
+    <ProjectReference Include="..\Common\Services.Common\Services.Common.csproj" />
     <ProjectReference Include="..\Message.Domain\Message.Domain.csproj" />
     <ProjectReference Include="..\Message.Infrastructure\Message.Infrastructure.csproj" />
   </ItemGroup>

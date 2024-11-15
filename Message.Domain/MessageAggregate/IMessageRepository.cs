@@ -6,10 +6,12 @@ namespace Message.Infrastructure.Repositories
     {
         IUnitOfWork UnitOfWork { get; }
 
-        RsiMessage Add(RsiMessage message);
+        Task<RsiMessage> Add(RsiMessage message);
 
         ReaMessage Add(ReaMessage message);
 
-        Common AddCommon(int RsiId);
+        Task<CommonMessage> AddCommon(MessageType messageType, int messageId);
+
+        Task<Tuple<CommonMessage, string>> GetCommonAsync(string msgId);
     }
 }

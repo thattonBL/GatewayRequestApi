@@ -24,12 +24,12 @@ BEGIN
     msg_source varchar(50) NULL,
     msg_target int NOT NULL,
     prty varchar(50) NULL,
-    type int NOT NULL,
+    m_type int NOT NULL,
     ref_source varchar(50) NULL,
     ref_request_id varchar(50) NULL,
     ref_seq_no int NULL,
     dt_created datetime NOT NULL,
-    CONSTRAINT PK_Common_id PRIMARY KEY CLUSTERED (id)
+    CONSTRAINT PK_Common PRIMARY KEY CLUSTERED (m_type, msg_target)
   )
 END
 
@@ -177,14 +177,14 @@ END
 BEGIN
   IF NOT EXISTS(SELECT top 1 1 FROM Gateway.dbo.Common)
   BEGIN
-    INSERT INTO Gateway.dbo.Common(msg_status, msg_source, msg_target, prty, type, ref_source, ref_request_id, ref_seq_no, dt_created) VALUES ('Processing', 'B33', 1, NULL, 1, NULL, NULL, NULL, '2024-03-13 00:00:00.000');
+    INSERT INTO Gateway.dbo.Common(msg_status, msg_source, msg_target, prty, m_type, ref_source, ref_request_id, ref_seq_no, dt_created) VALUES ('Processing', 'B33', 1, NULL, 1, NULL, NULL, NULL, '2024-03-13 00:00:00.000');
   END
 END
 
 -- ADD FOREIGN KEYS --
 
 ALTER TABLE Gateway.dbo.Common
-  ADD CONSTRAINT FK_Common_messageTypeLookup_id FOREIGN KEY (type) REFERENCES dbo.messageTypeLookup (id)
+  ADD CONSTRAINT FK_Common_messageTypeLookup_id FOREIGN KEY (m_type) REFERENCES dbo.messageTypeLookup (id)
 GO
 
 -- ADD STORED PROCEDURE --

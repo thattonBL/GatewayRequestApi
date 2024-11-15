@@ -9,14 +9,21 @@ public class RsiMessageEntityTypeConfiguration : IEntityTypeConfiguration<RsiMes
     public void Configure(EntityTypeBuilder<RsiMessage> builder)
     {
         builder.ToTable("RSI");
-        builder.HasKey(e => e.Id);
+
+        // Primary key
+        builder.HasKey(e => e.Id)
+               .HasName("PK_RSI_id");
 
         builder.Ignore(e => e.DomainEvents);
 
         builder.Property(e => e.Id)
             .HasColumnName("id")
-            .ValueGeneratedOnAdd();        
-        
+            .ValueGeneratedOnAdd();
+
+        //builder.Property<int>("_msg_type")
+        //    .HasColumnName("msg_type")
+        //    .HasDefaultValue(1);
+
         builder.Property<string>("_collection_code")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("collection_code")
@@ -46,7 +53,7 @@ public class RsiMessageEntityTypeConfiguration : IEntityTypeConfiguration<RsiMes
             .HasColumnName("publication_date");
 
         builder.Property<DateTime>("_periodical_date")
-            .UsePropertyAccessMode (PropertyAccessMode.Field)
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("periodical_date");
 
         builder.Property<string>("_title")
@@ -109,8 +116,7 @@ public class RsiMessageEntityTypeConfiguration : IEntityTypeConfiguration<RsiMes
             .HasMaxLength(50)
             .IsUnicode(false);
 
-        builder.Property<string>("_identifier")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
+        builder.Property( i => i.Identifier)
             .HasColumnName("identifier")
             .HasMaxLength(50)
             .IsUnicode(false);

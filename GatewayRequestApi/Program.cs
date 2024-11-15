@@ -8,13 +8,12 @@ using IntegrationEventLogEF.Services;
 using System.Data.Common;
 using Message.Infrastructure.Repositories;
 using Serilog;
-using Elastic.CommonSchema.Serilog;
-using Elastic.Serilog.Sinks;
-using Elastic.Ingest.Elasticsearch;
+using GatewayRequestApi.Queries;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace GatewayRequestApi
 {
-    public class Program
+    public partial class Program
     {
         public static void Main(string[] args)
         {
@@ -24,19 +23,6 @@ namespace GatewayRequestApi
             builder.Services.AddControllers();
             builder.Services.AddHttpContextAccessor();
 
-            builder.Host.UseSerilog((context, configuration) =>
-            {
-                var httpAccessor = context.Configuration.Get<HttpContextAccessor>();
-                configuration.ReadFrom.Configuration(context.Configuration)
-                             .Enrich.WithEcsHttpContext(httpAccessor)
-                             .Enrich.WithEnvironmentName()
-                             .WriteTo.ElasticCloud(context.Configuration["ElasticCloud:CloudId"], context.Configuration["ElasticCloud:CloudUser"], context.Configuration["ElasticCloud:CloudPass"], opts =>
-                             {
-                                 opts.DataStream = new Elastic.Ingest.Elasticsearch.DataStreams.DataStreamName("gateway-request-api-new-logs");
-                                 opts.BootstrapMethod = BootstrapMethod.Failure;
-                             });               
-            });
-
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -44,15 +30,22 @@ namespace GatewayRequestApi
             //Adds the Event Bus required for integration events
             builder.AddServiceDefaults();
 
-            // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-            var dbName = Environment.GetEnvironmentVariable("DB_NAME");
-            var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
+            var appInsightsConnectionString = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("APP_INS")) ? builder.Configuration.GetConnectionString("ApplicationInsightConnectionString") : Environment.GetEnvironmentVariable("APP_INS");
 
-            if (connectionString != null)
+            // Configure application insight logging
+            builder.Logging.AddApplicationInsights(
+                    configureTelemetryConfiguration: (config) =>
+                    config.ConnectionString = appInsightsConnectionString,
+                    configureApplicationInsightsLoggerOptions: (options) => { }
+                );
+
+            builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("gatewayRequestAPI", LogLevel.Trace);
+
+            // Add services to the container.
+            var connectionString = Environment.GetEnvironmentVariable("SQL_DB_CONNECTION_STRING");
+            if (String.IsNullOrEmpty(connectionString))
             {
-                connectionString = connectionString.Replace("{#host}", dbHost).Replace("{#dbName}", dbName).Replace("{#dbPassword}", dbPassword);
+                connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             }
 
             builder.Services.AddDbContext<MessageContext>(options => options.UseSqlServer(connectionString));
@@ -68,6 +61,8 @@ namespace GatewayRequestApi
             //        });
             //});
 
+
+            builder.Services.AddScoped<IMessageQueries>(sp => new MessageQueries(constr: connectionString));
             builder.Services.AddTransient<Func<DbConnection, IIntegrationEventLogService>>(sp => (DbConnection c) => new IntegrationEventLogService(c));
 
             builder.Services.AddTransient<IMessageIntegrationEventService, MessageIntegrationEventService>();
@@ -79,10 +74,10 @@ namespace GatewayRequestApi
                 cfg.RegisterServicesFromAssemblyContaining(typeof(Program));
 
                 cfg.AddOpenBehavior(typeof(LoggingBehaviour<,>));
-                //cfg.AddOpenBehavior(typeof(ValidatorBehavior<,>));
+                cfg.AddOpenBehavior(typeof(ValidatorBehavior<,>));
                 cfg.AddOpenBehavior(typeof(TransactionBehaviour<,>));
             });
-            
+
             services.AddScoped<IMessageRepository, MessageRepository>();
 
             var app = builder.Build();
@@ -90,8 +85,8 @@ namespace GatewayRequestApi
             // Configure the HTTP request pipeline.
             //if (app.Environment.IsDevelopment())
             //{
-                app.UseSwagger();
-                app.UseSwaggerUI();
+            app.UseSwagger();
+            app.UseSwaggerUI();
             //}
             app.UseCors("AllowAll");
             app.UseHttpsRedirection();
@@ -102,7 +97,7 @@ namespace GatewayRequestApi
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<MessageContext>();
-                 //var env = app.Services.GetService<IWebHostEnvironment>();
+                //var env = app.Services.GetService<IWebHostEnvironment>();
                 //var settings = app.Services.GetService<IOptions<OrderingSettings>>();
                 //var logger = app.Services.GetService<ILogger<OrderingContextSeed>>();
                 //await context.Database.MigrateAsync();

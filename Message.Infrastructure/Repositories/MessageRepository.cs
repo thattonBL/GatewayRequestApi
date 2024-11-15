@@ -1,4 +1,6 @@
-﻿using Message.Domain.MessageAggregate;
+﻿using Message.Domain.Enums;
+using Message.Domain.MessageAggregate;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ namespace Message.Infrastructure.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public RsiMessage Add(RsiMessage message)
+        public async Task<RsiMessage> Add(RsiMessage message)
         {
             //need to add new Queue, Common and RSI message not just RSI
             return _context.RSIs.Add(message).Entity;
@@ -30,10 +32,41 @@ namespace Message.Infrastructure.Repositories
             return _context.REAs.Add(message).Entity;
         }
 
-        public Common AddCommon(int RsiId)
+        public async Task<CommonMessage> AddCommon(MessageType messageType, int messageId)
         {
-            var newCommon = new Common { dt_created = DateTime.Now, msg_target = RsiId, type = 1 };
-            return _context.Commons.Add(newCommon).Entity;
+            // Retrieve the existing messageTypeLookup entity
+            var messageTypeLookup = await GetMessageTypeLookupByIdAsync((int) messageType);
+
+            if (messageTypeLookup == null)
+            {
+                throw new InvalidOperationException("The specified messageTypeLookup entity does not exist.");
+            }
+
+            var newCommon = new CommonMessage(MessageStatusEnum.Received.ToString(), "", messageId, "", (int) messageType, "", "", 0, DateTime.Now, messageTypeLookup);
+            return _context.Common.Add(newCommon).Entity;
+        }
+
+        private async Task<messageTypeLookup> GetMessageTypeLookupByIdAsync(int id)
+        {
+            return await _context.messageTypeLookups.FindAsync(id);
+        }
+
+        public async Task<Tuple<CommonMessage, string>> GetCommonAsync(string msgId)
+        {
+            var common = await _context.RSIs.Where(order => order.Identifier == msgId)
+                                            .Join(_context.Common, order => order.Id, common => common.msg_target, (order, common) => new { Order = order, Common = common })
+                                            .Where(x => x.Common.m_type == (int)MessageType.RSI)
+                                            .Select(x => x.Common)
+                                            .FirstOrDefaultAsync();
+            if (common == null)
+            {
+                common = _context.RSIs.Local.Where(order => order.Identifier == msgId)
+                                            .Join(_context.Common, order => order.Id, common => common.msg_target, (order, common) => new { Order = order, Common = common })
+                                            .Where(x => x.Common.m_type == (int)MessageType.RSI)
+                                            .Select(x => x.Common)
+                                            .FirstOrDefault();
+            }
+            return new(common, msgId);
         }
     }
 }

@@ -41,35 +41,6 @@ services:
       command: bash -c '/opt/mssql-tools/bin/sqlcmd -S gateway-db -U sa -P password@12345# -i /docker-entrypoint-initdb.d/init.sql; echo "------------------------------ALLLL DONNNNNNEEEEEE!!!!---------------------------------";'
       networks:
          - gatewaynetwork
-  elasticsrch01:
-      image: docker.elastic.co/elasticsearch/elasticsearch:7.17.20
-      container_name: gateway-elasticsearch
-      environment:
-        - node.name=elasticsrch01
-        - cluster.name=es-docker-cluster
-        - cluster.initial_master_nodes=elasticsrch01
-        - bootstrap.memory_lock=true
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      ulimits:
-        memlock:
-            soft: -1
-            hard: -1
-      volumes:
-        - ./elasticsrchdata01:/usr/share/elasticsearch/data
-      ports:
-        - "9200:9200"
-      networks:
-        - gatewaynetwork
-  kibana:
-      image: docker.elastic.co/kibana/kibana:7.17.20
-      container_name: gateway-kibana
-      environment:
-          - ELASTICSEARCH_URL=http://elasticsrch01:9200
-          - ELASTICSEARCH_HOSTS=http://elasticsrch01:9200
-      ports:
-          - "5601:5601"
-      networks:
-          - gatewaynetwork
   gatewayrabbitmq:
     image: rabbitmq:3.13.1-management
     container_name: gateway-rabbitmq
@@ -90,6 +61,7 @@ services:
         environment:
           - SQL_DB_CONNECTION_STRING=Data Source=gateway-db;Database=Gateway;Integrated Security=False;User ID=sa;Password=password@12345#;MultipleActiveResultSets=false;TrustServerCertificate=True;
           - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=3d0b0fff-29cb-4263-8ff9-380e6d7d31b9;IngestionEndpoint=https://uksouth-1.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/;ApplicationId=2d0bdcb7-1f3c-4212-83aa-c381d4125727;
+          - AZURE_SERVICE_BUS_CONNECTION_STRING=Endpoint=sb://gateway-messaging.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=qkBjKbAm53hXoA4h36Keg2QdRssYUOvJR+ASbIOzGfo=
           - MSG_HOST=gateway-rabbitmq
         networks:
           - gatewaynetwork

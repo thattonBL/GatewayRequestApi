@@ -1,12 +1,5 @@
 trigger: none
 
-#resources:
- # pipelines:
-  #  - pipeline: trigger_pipeline
-   #   source: 'thattonBL.GatewayRequestApi'
-    #  project: 'Gateway'
-     # trigger: true  # Enable trigger from GitHub Actions pipeline
-
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -28,12 +21,13 @@ steps:
       scriptLocation: 'inlineScript'
       inlineScript: |
         echo "Updating Azure Container App with the latest image"
-
+        az config set extension.use_dynamic_install=yes_without_prompt
         # Update the Azure Container App to pull the latest image
         az containerapp update \
           --name gateway-request-api-iac
           --resource-group Gateway-IAC-Resources
           --image attonbomb/gateway-request-api:latest
+          --registry-server hub.docker.com
 
         echo "Container App updated successfully"
 

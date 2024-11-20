@@ -82,7 +82,7 @@ public static class CommonExtensions
             services.AddSingleton<IServiceBusPersisterConnection>(sp =>
             {
                 //check the Environment vars first or a connection string and if not get it from config
-                var serviceBusConnectionString = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("SERVICE_BUS")) ? configuration.GetRequiredConnectionString("EventBus") : Environment.GetEnvironmentVariable("SERVICE_BUS");
+                var serviceBusConnectionString = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING")) ? configuration.GetRequiredConnectionString("EventBus") : Environment.GetEnvironmentVariable("AZURE_SERVICE_BUS_CONNECTION_STRING");
                 if (String.IsNullOrEmpty(serviceBusConnectionString))
                 {
                     throw new Exception("No Service Bus Connection defined");

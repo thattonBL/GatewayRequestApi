@@ -30,4 +30,3 @@ steps:
           --registry-server hub.docker.com
 
         echo "Container App updated successfully"
-

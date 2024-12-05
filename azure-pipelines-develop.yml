@@ -19,7 +19,7 @@ steps:
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: 'Gateway-Resources-IAC-MI-Conn-2'
+      azureSubscription: 'Dev-Gateway-Resources-MS'
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |

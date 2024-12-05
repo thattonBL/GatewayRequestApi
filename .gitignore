@@ -6,3 +6,4 @@ Message.Infrastructure/obj
 obj
 GatewayRequestApi/Properties/PublishProfiles
 elasticsrchdata01
+.github/workflows

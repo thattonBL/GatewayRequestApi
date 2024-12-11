@@ -59,9 +59,9 @@ services:
           - gatewaydb
           - gatewayrabbitmq
         environment:
-          - SQL_DB_CONNECTION_STRING=Data Source=gateway-db;Database=Gateway;Integrated Security=False;User ID=sa;Password=password@12345#;MultipleActiveResultSets=false;TrustServerCertificate=True;
-          - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=3d0b0fff-29cb-4263-8ff9-380e6d7d31b9;IngestionEndpoint=https://uksouth-1.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/;ApplicationId=2d0bdcb7-1f3c-4212-83aa-c381d4125727;
-          - AZURE_SERVICE_BUS_CONNECTION_STRING=Endpoint=sb://gateway-messaging.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=qkBjKbAm53hXoA4h36Keg2QdRssYUOvJR+ASbIOzGfo=
+          - SQL_DB_CONNECTION_STRING=Data Source=gateway-db;Database=Gateway;Integrated Security=False;User ID=---user---;Password=----hidden-Vale----password@12345#;MultipleActiveResultSets=false;TrustServerCertificate=True;
+          - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=------hidden--Value-----;IngestionEndpoint=https://uksouth-1.in.applicationinsights.azure.com/;LiveEndpoint=https://uksouth.livediagnostics.monitor.azure.com/;ApplicationId=2d0bdcb7-1f3c-4212-83aa-c381d4125727;
+          - AZURE_SERVICE_BUS_CONNECTION_STRING=Endpoint=sb://gateway-messaging.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=-----hidden----Value------;
           - MSG_HOST=gateway-rabbitmq
         networks:
           - gatewaynetwork

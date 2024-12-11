@@ -33,8 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BuildingBlocks\EventBus\EventBus.csproj" />
-    <ProjectReference Include="..\BuildingBlocks\IntegrationEventLogEF\IntegrationEventLogEF.csproj" />
     <ProjectReference Include="..\Common\Events.Common\Events.Common.csproj" />
     <ProjectReference Include="..\Common\Services.Common\Services.Common.csproj" />
     <ProjectReference Include="..\Message.Domain\Message.Domain.csproj" />

@@ -9,12 +9,12 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/Microservices/GatewayRequestApi/GatewayRequestApi/GatewayRequestApi.csproj", "src/Microservices/GatewayRequestApi/GatewayRequestApi/"]
-COPY ["src/Microservices/GatewayRequestApi/Message.Domain/Message.Domain.csproj", "src/Microservices/GatewayRequestApi/Message.Domain/"]
-COPY ["src/Microservices/GatewayRequestApi/Message.Infrastructure/Message.Infrastructure.csproj", "src/Microservices/GatewayRequestApi/Message.Infrastructure/"]
-RUN dotnet restore "./src/Microservices/GatewayRequestApi/GatewayRequestApi/GatewayRequestApi.csproj"
+COPY ["GatewayRequestApi/GatewayRequestApi.csproj", "GatewayRequestApi/"]
+COPY ["Message.Domain/Message.Domain.csproj", "Message.Domain/"]
+COPY ["Message.Infrastructure/Message.Infrastructure.csproj", "Message.Infrastructure/"]
+RUN dotnet restore "./GatewayRequestApi/./GatewayRequestApi.csproj"
 COPY . .
-WORKDIR "/src/src/Microservices/GatewayRequestApi/GatewayRequestApi"
+WORKDIR "/src/GatewayRequestApi"
 RUN dotnet build "./GatewayRequestApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

@@ -9,18 +9,12 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["GatewayRequestApi/GatewayRequestApi.csproj", "GatewayRequestApi/"]
-COPY ["BuildingBlocks/EventBus/EventBus.csproj", "BuildingBlocks/EventBus/"]
-COPY ["BuildingBlocks/IntegrationEventLogEF/IntegrationEventLogEF.csproj", "BuildingBlocks/IntegrationEventLogEF/"]
-COPY ["Common/Events.Common/Events.Common.csproj", "Common/Events.Common/"]
-COPY ["Common/Services.Common/Services.Common.csproj", "Common/Services.Common/"]
-COPY ["BuildingBlocks/EventBusRabbitMQ/EventBusRabbitMQ.csproj", "BuildingBlocks/EventBusRabbitMQ/"]
-COPY ["BuildingBlocks/EventBusServiceBus/EventBusServiceBus.csproj", "BuildingBlocks/EventBusServiceBus/"]
-COPY ["Message.Domain/Message.Domain.csproj", "Message.Domain/"]
-COPY ["Message.Infrastructure/Message.Infrastructure.csproj", "Message.Infrastructure/"]
-RUN dotnet restore "./GatewayRequestApi/./GatewayRequestApi.csproj"
+COPY ["src/Microservices/GatewayRequestApi/GatewayRequestApi/GatewayRequestApi.csproj", "src/Microservices/GatewayRequestApi/GatewayRequestApi/"]
+COPY ["src/Microservices/GatewayRequestApi/Message.Domain/Message.Domain.csproj", "src/Microservices/GatewayRequestApi/Message.Domain/"]
+COPY ["src/Microservices/GatewayRequestApi/Message.Infrastructure/Message.Infrastructure.csproj", "src/Microservices/GatewayRequestApi/Message.Infrastructure/"]
+RUN dotnet restore "./src/Microservices/GatewayRequestApi/GatewayRequestApi/GatewayRequestApi.csproj"
 COPY . .
-WORKDIR "/src/GatewayRequestApi"
+WORKDIR "/src/src/Microservices/GatewayRequestApi/GatewayRequestApi"
 RUN dotnet build "./GatewayRequestApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

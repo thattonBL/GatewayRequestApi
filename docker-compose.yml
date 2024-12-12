@@ -59,9 +59,9 @@ services:
           - gatewaydb
           - gatewayrabbitmq
         environment:
-          - SQL_DB_CONNECTION_STRING=Data Source=gateway-db;Database=Gateway;Integrated Security=False;User ID=---user---;Password=----hidden-Vale----password@12345#;MultipleActiveResultSets=false;TrustServerCertificate=True;
-          - APPLICATIONINSIGHTS_CONNECTION_STRING=--------------------InstrumentationKey------------------;
-          - AZURE_SERVICE_BUS_CONNECTION_STRING=Endpoint=sb://gateway-messaging.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=-----hidden----Value------;
+          # - SQL_DB_CONNECTION_STRING=Data Source=gateway-db;Database=Gateway;Integrated Security=False;User ID=---user---;Password=----hidden-Vale----password@12345#;MultipleActiveResultSets=false;TrustServerCertificate=True;
+          # - APPLICATIONINSIGHTS_CONNECTION_STRING=--------------------InstrumentationKey------------------;
+          # - AZURE_SERVICE_BUS_CONNECTION_STRING=Endpoint=sb://gateway-messaging.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=-----hidden----Value------;
           - MSG_HOST=gateway-rabbitmq
         networks:
           - gatewaynetwork

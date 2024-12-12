@@ -1,4 +1,4 @@
-﻿using EventBus.Events;
+﻿using BL.Gateway.EventBus.Events;
 using System.Text.Json.Serialization;
 
 namespace GatewayRequestApi.Application.IntegrationEvents.Events;

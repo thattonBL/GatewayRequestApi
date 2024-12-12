@@ -1,5 +1,5 @@
-﻿using EventBus.Abstractions;
-using EventBus.Events;
+﻿using BL.Gateway.EventBus.Abstractions;
+using BL.Gateway.EventBus.Events;
 using IntegrationEventLogEF.Services;
 using Message.Infrastructure;
 using Microsoft.EntityFrameworkCore;

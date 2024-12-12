@@ -15,6 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BL.Gateway.Events.Common" Version="1.0.0" />
+    <PackageReference Include="BL.Gateway.Services.Common" Version="1.0.0" />
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
@@ -33,8 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Events.Common\Events.Common.csproj" />
-    <ProjectReference Include="..\Common\Services.Common\Services.Common.csproj" />
     <ProjectReference Include="..\Message.Domain\Message.Domain.csproj" />
     <ProjectReference Include="..\Message.Infrastructure\Message.Infrastructure.csproj" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿using EventBus.Extensions;
+﻿using BL.Gateway.EventBus.Extensions;
 
 namespace GatewayRequestApi.Application.Behaviours;
 

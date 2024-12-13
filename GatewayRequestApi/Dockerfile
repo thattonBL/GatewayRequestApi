@@ -9,13 +9,13 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["GatewayRequestApi/nuget.config", ""]
+COPY ["GatewayRequestApi/nuget.config", "/src/nuget.config"]
 
 COPY ["GatewayRequestApi/GatewayRequestApi.csproj", "GatewayRequestApi/"]
 COPY ["Message.Domain/Message.Domain.csproj", "Message.Domain/"]
 COPY ["Message.Infrastructure/Message.Infrastructure.csproj", "Message.Infrastructure/"]
 
-RUN dotnet restore "./GatewayRequestApi/./GatewayRequestApi.csproj"
+RUN dotnet restore "./GatewayRequestApi/./GatewayRequestApi.csproj" --configfile /src/nuget.config
 COPY . .
 WORKDIR "/src/GatewayRequestApi"
 RUN dotnet build "./GatewayRequestApi.csproj" -c $BUILD_CONFIGURATION -o /app/build

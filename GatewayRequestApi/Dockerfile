@@ -9,8 +9,8 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["GatewayRequestApi/nuget.config", ""]
 
-COPY ["nuget.config", ""]
 COPY ["GatewayRequestApi/GatewayRequestApi.csproj", "GatewayRequestApi/"]
 COPY ["Message.Domain/Message.Domain.csproj", "Message.Domain/"]
 COPY ["Message.Infrastructure/Message.Infrastructure.csproj", "Message.Infrastructure/"]

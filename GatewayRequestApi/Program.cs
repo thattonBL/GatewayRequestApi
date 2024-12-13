@@ -10,6 +10,8 @@ using Message.Infrastructure.Repositories;
 using Serilog;
 using GatewayRequestApi.Queries;
 using Microsoft.Extensions.Logging.ApplicationInsights;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace GatewayRequestApi
 {
@@ -67,6 +69,31 @@ namespace GatewayRequestApi
 
             builder.Services.AddTransient<IMessageIntegrationEventService, MessageIntegrationEventService>();
 
+            // Add health checks
+            var hcBuilder = builder.Services.AddHealthChecks();
+
+            // Add Gateway DB health check
+            hcBuilder.AddSqlServer(
+                connectionString,
+                name: "Gateway DB");
+
+            // Get which message bus is being used and add the relevant health check
+            if (string.Equals(builder.Configuration["EventBus:ProviderName"], "ServiceBus", StringComparison.OrdinalIgnoreCase))
+            {
+                // Add Azure Serice Bus health check
+                hcBuilder.AddAzureServiceBusTopic(
+                    builder.Configuration.GetRequiredConnectionString("EventBus"),
+                    topicName: builder.Configuration["EventBus:HealthCheckTopicName"],
+                    name: "Azure Service Bus");
+            }
+            else
+            {
+                // Add RabbitMQ health check
+                hcBuilder.AddRabbitMQ(
+                    builder.Configuration.GetRequiredConnectionString("EventBus"),
+                    name: "RabbitMQ");
+            }
+
             var services = builder.Services;
 
             services.AddMediatR(cfg =>
@@ -108,6 +135,11 @@ namespace GatewayRequestApi
             }
 
             app.MapControllers();
+            app.MapHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
             app.Run();
         }
     }

@@ -11,6 +11,10 @@ ARG BUILD_CONFIGURATION=Release
 ARG AZURE_DEVOPS_PAT  # Add ARG for the PAT
 WORKDIR /src
 
+# Ensure a clean slate for NuGet sources
+RUN dotnet nuget remove source Gateway_Nuget_Feed || true
+RUN dotnet nuget remove source nuget.org || true
+
 # Add the default NuGet.org source
 RUN dotnet nuget add source "https://api.nuget.org/v3/index.json" --name nuget.org
 

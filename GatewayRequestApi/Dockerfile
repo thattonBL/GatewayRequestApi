@@ -22,8 +22,7 @@ RUN dotnet nuget add source "https://api.nuget.org/v3/index.json" --name nuget.o
 RUN dotnet nuget add source "https://pkgs.dev.azure.com/BritishLibrary-AppDev/Gateway/_packaging/Gateway_Nuget_Feed/nuget/v3/index.json" \
     --name Gateway_Nuget_Feed \
     --username AzureDevOps \
-    --password $AZURE_DEVOPS_PAT \
-    --store-password-in-clear-text
+    --password $AZURE_DEVOPS_PAT
 
 COPY ["GatewayRequestApi/GatewayRequestApi.csproj", "GatewayRequestApi/"]
 COPY ["Message.Domain/Message.Domain.csproj", "Message.Domain/"]

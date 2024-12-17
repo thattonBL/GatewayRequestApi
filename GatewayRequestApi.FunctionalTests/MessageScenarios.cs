@@ -1,4 +1,4 @@
-﻿using EventBus.Events;
+﻿using BL.Gateway.EventBus.Events;
 using GatewayRequestApi.Application.IntegrationEvents;
 using GatewayRequestApi.Application.IntegrationEvents.Events;
 using GatewayRequestApi.Queries;

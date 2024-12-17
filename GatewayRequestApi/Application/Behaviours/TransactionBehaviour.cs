@@ -1,5 +1,5 @@
 ﻿using GatewayRequestApi.Application.IntegrationEvents;
-using EventBus.Extensions;
+using BL.Gateway.EventBus.Extensions;
 using MediatR;
 using Message.Infrastructure;
 using Microsoft.EntityFrameworkCore;

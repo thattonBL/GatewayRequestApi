@@ -1,4 +1,4 @@
-﻿using Events.Common;
+﻿using BL.Gateway.Events.Common;
 using GatewayRequestApi.Models;
 
 namespace GatewayRequestApi.Application.Commands;

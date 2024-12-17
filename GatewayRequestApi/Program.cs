@@ -3,11 +3,10 @@ using GatewayRequestApi.Application.Behaviours;
 using Message.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using GatewayRequestApi.Application.IntegrationEvents;
-using Services.Common;
+using BL.Gateway.Services.Common;
 using IntegrationEventLogEF.Services;
 using System.Data.Common;
 using Message.Infrastructure.Repositories;
-using Serilog;
 using GatewayRequestApi.Queries;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 

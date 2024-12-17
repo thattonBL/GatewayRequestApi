@@ -1,4 +1,4 @@
-﻿using EventBus.Extensions;
+﻿using BL.Gateway.EventBus.Extensions;
 using FluentValidation;
 using Message.Domain.Exceptions;
 

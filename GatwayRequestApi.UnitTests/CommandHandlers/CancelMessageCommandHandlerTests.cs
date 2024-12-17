@@ -1,16 +1,10 @@
-﻿using Events.Common;
+﻿using BL.Gateway.Events.Common;
 using GatewayRequestApi.Application.Commands;
-using GatewayRequestApi.Application.IntegrationEvents;
 using MediatR;
 using Message.Domain.MessageAggregate;
 using Message.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GatwayRequestApi.UnitTests.CommandHandlers;
 

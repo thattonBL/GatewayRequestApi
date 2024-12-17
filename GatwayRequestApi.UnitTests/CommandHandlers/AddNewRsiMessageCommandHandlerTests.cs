@@ -4,7 +4,7 @@ using MediatR;
 using Message.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Events.Common;
+using BL.Gateway.Events.Common;
 using GatewayRequestApi.Validators;
 using Message.Domain.MessageAggregate;
 

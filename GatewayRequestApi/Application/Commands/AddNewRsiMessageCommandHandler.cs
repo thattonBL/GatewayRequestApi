@@ -1,10 +1,7 @@
-﻿using Events.Common.Events;
-using GatewayRequestApi.Application.IntegrationEvents;
+﻿using GatewayRequestApi.Application.IntegrationEvents;
 using GatewayRequestApi.Application.IntegrationEvents.Events;
-using GatewayRequestApi.Models;
 using Message.Domain.MessageAggregate;
 using Message.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Globalization;
 
 namespace GatewayRequestApi.Application.Commands;

@@ -15,7 +15,7 @@ COPY ["GatewayRequestApi/GatewayRequestApi.csproj", "GatewayRequestApi/"]
 COPY ["Message.Domain/Message.Domain.csproj", "Message.Domain/"]
 COPY ["Message.Infrastructure/Message.Infrastructure.csproj", "Message.Infrastructure/"]
 
-RUN dotnet restore "./GatewayRequestApi/./GatewayRequestApi.csproj" --configfile /src/nuget.config
+RUN dotnet restore "./GatewayRequestApi/GatewayRequestApi.csproj" --configfile /src/nuget.config
 COPY . .
 WORKDIR "/src/GatewayRequestApi"
 RUN dotnet build "./GatewayRequestApi.csproj" -c $BUILD_CONFIGURATION -o /app/build

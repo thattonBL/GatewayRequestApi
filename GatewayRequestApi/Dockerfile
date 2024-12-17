@@ -10,19 +10,23 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 ARG AZURE_DEVOPS_PAT  # Add ARG for the PAT
 WORKDIR /src
-COPY ["GatewayRequestApi/nuget.config", "/src/nuget.config"]
 
-# Replace the PAT placeholder in nuget.config
-RUN sed -i "s|<add key=\"Gateway_Nuget_Feed\".*|<add key=\"Gateway_Nuget_Feed\" value=\"https://pkgs.dev.azure.com/BritishLibrary-AppDev/Gateway/_packaging/Gateway_Nuget_Feed/nuget/v3/index.json\" username=\"AzureDevOps\" password=\"$AZURE_DEVOPS_PAT\" />|" /src/nuget.config
+# Add the default NuGet.org source
+RUN dotnet nuget add source "https://api.nuget.org/v3/index.json" --name nuget.org
 
+# Add the private Azure DevOps NuGet feed with authentication
+RUN dotnet nuget add source "https://pkgs.dev.azure.com/BritishLibrary-AppDev/Gateway/_packaging/Gateway_Nuget_Feed/nuget/v3/index.json" \
+    --name Gateway_Nuget_Feed \
+    --username AzureDevOps \
+    --password $AZURE_DEVOPS_PAT \
+    --store-password-in-clear-text
 
 COPY ["GatewayRequestApi/GatewayRequestApi.csproj", "GatewayRequestApi/"]
 COPY ["Message.Domain/Message.Domain.csproj", "Message.Domain/"]
 COPY ["Message.Infrastructure/Message.Infrastructure.csproj", "Message.Infrastructure/"]
 
 # Authenticate and restore
-RUN dotnet nuget add source "https://pkgs.dev.azure.com/BritishLibrary-AppDev/Gateway/_packaging/Gateway_Nuget_Feed/nuget/v3/index.json" --username AzureDevOps --password $AZURE_DEVOPS_PAT --store-password-in-clear-text
-RUN dotnet restore "./GatewayRequestApi/GatewayRequestApi.csproj" --configfile /src/nuget.config
+RUN dotnet restore "./GatewayRequestApi/GatewayRequestApi.csproj"
 
 COPY . .
 WORKDIR "/src/GatewayRequestApi"

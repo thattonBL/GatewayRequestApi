@@ -36,7 +36,7 @@ jobs:
 
       # Step 5: Run Unit Tests
       - name: Run Unit Tests
-        run: dotnet test GatwayRequestApi.UnitTests/GatwayRequestApi.UnitTests.csproj --logger "trx;LogFileName=unit-test-results.trx" --verbosity normal
+        run: dotnet test GatwayRequestApi.UnitTests/GatwayRequestApi.UnitTests.csproj --logger "trx;LogFileName=unit-test-results.trx" --results-directory ./TestResults --verbosity normal 
 
       # Step 6: Restore Dependencies for Functional Tests
       - name: Restore dependencies for Functional Tests
@@ -44,16 +44,14 @@ jobs:
 
       # Step 7: Run Functional Tests
       - name: Run Functional Tests
-        run: dotnet test GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj --logger "trx;LogFileName=functional-test-results.trx" --verbosity normal
+        run: dotnet test GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj --logger "trx;LogFileName=functional-test-results.trx" --results-directory ./TestResults --verbosity normal
 
       # Step 8: Upload Test Results with Test Reporter
       - name: Upload Test Results
         uses: dorny/test-reporter@v1
         with:
           name: Unit and Functional Tests
-          path: |
-            unit-test-results.trx
-            functional-test-results.trx
+          path: ./TestResults/*.trx
           reporter: dotnet-trx
 
       # Step 9: Login to Docker Hub

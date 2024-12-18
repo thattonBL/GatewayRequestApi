@@ -36,7 +36,7 @@ jobs:
 
       # Step 5: Run Unit Tests
       - name: Run Unit Tests
-        run: dotnet test GatwayRequestApi.UnitTests/GatwayRequestApi.UnitTests.csproj --no-build --verbosity detailed
+        run: dotnet test GatwayRequestApi.UnitTests/GatwayRequestApi.UnitTests.csproj --verbosity normal
 
       # Step 6: Restore Dependencies for Functional Tests
       - name: Restore dependencies for Functional Tests
@@ -44,7 +44,7 @@ jobs:
 
       # Step 7: Run Functional Tests
       - name: Run Functional Tests
-        run: dotnet test GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj --no-build --verbosity normal
+        run: dotnet test GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj --verbosity normal
 
       # Step 8: Login to Docker Hub
       - name: Log in to Docker Hub

@@ -17,24 +17,42 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Login to Docker Hub
+      # Step 2: Set up .NET environment
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0'
+
+      # Step 3: Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Step 4: Run Unit Tests
+      - name: Run Unit Tests
+        run: dotnet test GatewayRequestApi.UnitTests/GatewayRequestApi.UnitTests.csproj --no-build --verbosity normal
+
+      # Step 5: Run Functional Tests
+      - name: Run Functional Tests
+        run: dotnet test GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj --no-build --verbosity normal
+
+      # Step 6: Login to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # Step 3: Build the Docker image
+      # Step 7: Build the Docker image
       - name: Build Docker image
         run: |
           docker build --build-arg AZURE_DEVOPS_PAT=${{ secrets.AZURE_DEVOPS_PAT }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev -f GatewayRequestApi/Dockerfile .
 
-      # Step 4: Push Docker image to Docker Hub
+      # Step 8: Push Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev
 
-      # Step 5: Trigger Azure Release Pipeline
+      # Step 9: Trigger Azure Release Pipeline
       - name: Trigger Azure DevOps Pipeline
         uses: Azure/pipelines@v1.2
         with:

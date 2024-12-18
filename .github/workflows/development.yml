@@ -28,7 +28,7 @@ jobs:
         run: |
           echo ${{ secrets.AZURE_DEVOPS_PAT }} | dotnet nuget add source --store-password-in-clear-text \
           --name azure-artifacts https://pkgs.dev.azure.com/BritishLibrary-AppDev/Gateway/_packaging/Gateway_Nuget_Feed/nuget/v3/index.json \
-          --username any-user-name --password
+          --username GitHubActions --password ${{ secrets.AZURE_DEVOPS_PAT }}
 
       # Step 4: Restore dependencies
       - name: Restore dependencies for Unit Tests

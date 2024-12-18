@@ -11,6 +11,9 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
 
     steps:
       # Step 1: Checkout the repository
@@ -46,7 +49,11 @@ jobs:
       - name: Run Functional Tests
         run: dotnet test GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj --logger "trx;LogFileName=functional-test-results.trx" --results-directory ./TestResults --verbosity normal
 
-      # Step 8: Upload Test Results with Test Reporter
+      # Step 8: List Test Result Files
+      - name: List Test Result Files
+        run: ls -R ./TestResults
+      
+      # Step 9: Upload Test Results with Test Reporter
       - name: Upload Test Results
         uses: dorny/test-reporter@v1
         with:
@@ -54,24 +61,24 @@ jobs:
           path: ./TestResults/*.trx
           reporter: dotnet-trx
 
-      # Step 9: Login to Docker Hub
+      # Step 10: Login to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # Step 10: Build the Docker image
+      # Step 11: Build the Docker image
       - name: Build Docker image
         run: |
           docker build --build-arg AZURE_DEVOPS_PAT=${{ secrets.AZURE_DEVOPS_PAT }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev -f GatewayRequestApi/Dockerfile .
 
-      # Step 11: Push Docker image to Docker Hub
+      # Step 12: Push Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev
 
-      # Step 12: Trigger Azure Release Pipeline
+      # Step 13: Trigger Azure Release Pipeline
       - name: Trigger Azure DevOps Pipeline
         uses: Azure/pipelines@v1.2
         with:

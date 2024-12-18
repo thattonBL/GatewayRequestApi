@@ -46,24 +46,45 @@ jobs:
       - name: Run Functional Tests
         run: dotnet test GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj --verbosity normal
 
-      # Step 8: Login to Docker Hub
+      # Step 6: Install xUnit Viewer
+      - name: Install xUnit Viewer
+        run: npm install -g xunit-viewer
+
+      # Step 7: Generate Test Report for Unit Tests
+      - name: Generate Unit Test Report
+        run: xunit-viewer -r unit-test-results.trx -o unit-test-report.html
+
+      # Step 8: Generate Test Report for Functional Tests
+      - name: Generate Functional Test Report
+        run: xunit-viewer -r functional-test-results.trx -o functional-test-report.html
+
+      # Step 9: Upload Reports as Artifacts
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: |
+            unit-test-report.html
+            functional-test-report.html
+
+      # Step 10: Login to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # Step 9: Build the Docker image
+      # Step 11: Build the Docker image
       - name: Build Docker image
         run: |
           docker build --build-arg AZURE_DEVOPS_PAT=${{ secrets.AZURE_DEVOPS_PAT }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev -f GatewayRequestApi/Dockerfile .
 
-      # Step 10: Push Docker image to Docker Hub
+      # Step 12: Push Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev
 
-      # Step 11: Trigger Azure Release Pipeline
+      # Step 13: Trigger Azure Release Pipeline
       - name: Trigger Azure DevOps Pipeline
         uses: Azure/pipelines@v1.2
         with:

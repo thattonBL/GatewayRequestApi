@@ -27,12 +27,12 @@ jobs:
       # Step 3: Build the Docker image
       - name: Build Docker image
         run: |
-          docker build --build-arg AZURE_DEVOPS_PAT=${{ secrets.AZURE_DEVOPS_PAT }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:latest -f GatewayRequestApi/Dockerfile .
+          docker build --build-arg AZURE_DEVOPS_PAT=${{ secrets.AZURE_DEVOPS_PAT }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev -f GatewayRequestApi/Dockerfile .
 
       # Step 4: Push Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev
 
       # Step 5: Trigger Azure Release Pipeline
       - name: Trigger Azure DevOps Pipeline

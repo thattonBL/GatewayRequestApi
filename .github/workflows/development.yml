@@ -36,7 +36,7 @@ jobs:
 
       # Step 5: Run Unit Tests
       - name: Run Unit Tests
-        run: dotnet test GatwayRequestApi.UnitTests/GatwayRequestApi.UnitTests.csproj --no-build --verbosity normal
+        run: dotnet test GatwayRequestApi.UnitTests/GatwayRequestApi.UnitTests.csproj --no-build --verbosity detailed
 
       # Step 6: Restore Dependencies for Functional Tests
       - name: Restore dependencies for Functional Tests

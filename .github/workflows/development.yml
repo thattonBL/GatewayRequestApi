@@ -25,7 +25,7 @@ jobs:
 
       # Step 3: Restore dependencies
       - name: Restore dependencies for Unit Tests
-        run: dotnet restore GatewayRequestApi.UnitTests/GatewayRequestApi.UnitTests.csproj
+        run: dotnet restore GatwayRequestApi.UnitTests/GatwayRequestApi.UnitTests.csproj
 
       # Step 4: Run Unit Tests
       - name: Run Unit Tests

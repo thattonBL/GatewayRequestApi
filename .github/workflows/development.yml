@@ -23,40 +23,47 @@ jobs:
         with:
           dotnet-version: '8.0'
 
-      # Step 3: Restore dependencies
+      # Step 3: Authenticate with Azure Artifacts
+      - name: Authenticate with Azure Artifacts
+        run: |
+          echo ${{ secrets.AZURE_DEVOPS_PAT }} | dotnet nuget add source --store-password-in-clear-text \
+          --name azure-artifacts https://pkgs.dev.azure.com/BritishLibrary-AppDev/Gateway/_packaging/Gateway_Nuget_Feed/nuget/v3/index.json \
+          --username any-user-name --password
+
+      # Step 4: Restore dependencies
       - name: Restore dependencies for Unit Tests
         run: dotnet restore GatwayRequestApi.UnitTests/GatwayRequestApi.UnitTests.csproj
 
-      # Step 4: Run Unit Tests
+      # Step 5: Run Unit Tests
       - name: Run Unit Tests
         run: dotnet test GatewayRequestApi.UnitTests/GatewayRequestApi.UnitTests.csproj --no-build --verbosity normal
 
-      # Step 5: Restore Dependencies for Functional Tests
+      # Step 6: Restore Dependencies for Functional Tests
       - name: Restore dependencies for Functional Tests
         run: dotnet restore GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj
 
-      # Step 6: Run Functional Tests
+      # Step 7: Run Functional Tests
       - name: Run Functional Tests
         run: dotnet test GatewayRequestApi.FunctionalTests/GatewayRequestApi.FunctionalTests.csproj --no-build --verbosity normal
 
-      # Step 7: Login to Docker Hub
+      # Step 8: Login to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # Step 8: Build the Docker image
+      # Step 9: Build the Docker image
       - name: Build Docker image
         run: |
           docker build --build-arg AZURE_DEVOPS_PAT=${{ secrets.AZURE_DEVOPS_PAT }} -t ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev -f GatewayRequestApi/Dockerfile .
 
-      # Step 9: Push Docker image to Docker Hub
+      # Step 10: Push Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/gateway-request-api:dev
 
-      # Step 10: Trigger Azure Release Pipeline
+      # Step 11: Trigger Azure Release Pipeline
       - name: Trigger Azure DevOps Pipeline
         uses: Azure/pipelines@v1.2
         with:
